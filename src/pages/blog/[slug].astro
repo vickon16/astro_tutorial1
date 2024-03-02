@@ -1,0 +1,32 @@
+---
+import { getCollection, type CollectionEntry } from "astro:content";
+import Layout from "@/layouts/Layout.astro";
+import H1 from "@/components/H1.astro";
+import Main from "@/components/Main.astro";
+import { Image } from "astro:assets";
+import { getEntryBySlug } from "astro:content";
+
+const { slug } = Astro.params;
+const post = await getEntryBySlug("posts", slug as string);
+
+if (!post) return Astro.redirect("/404");
+const { Content } = await post.render();
+---
+
+<Layout title={post.data.title}>
+  <Main>
+    <H1 text={post.data.title} />
+    <Image
+      src={post.data.image}
+      width={600}
+      height={600 / 1.5}
+      alt={post.data.title}
+      class="rounded-lg shadow-xl mb-4 aspect-thumbnail object-cover w-full"
+    />
+    <div
+      class="prose-headings:font-bold prose-lg overflow-visible relative mb-20 w-full"
+    >
+      <Content />
+    </div>
+  </Main>
+</Layout>
